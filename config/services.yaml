@@ -1,0 +1,105 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # COMMAND
+    App\Api\Import\Command\WakfuActionCommand:
+        autowire: false
+        arguments:
+            - '@App\Api\Import\Processor\Processor'
+            - '@App\Api\Import\Reader\WakfuActionReader'
+            - '@App\Api\Import\Writer\WakfuActionWriter'
+
+    App\Api\Import\Command\WakfuEquipmentItemTypeCommand:
+        autowire: false
+        arguments:
+            - '@App\Api\Import\Processor\Processor'
+            - '@App\Api\Import\Reader\WakfuEquipmentItemTypeReader'
+            - '@App\Api\Import\Writer\WakfuEquipmentItemTypeWriter'
+
+    # PROCESSOR
+    App\Api\Import\Processor\Processor:
+        autowire: false
+        arguments:
+            - '@monolog.logger'
+
+    # READER
+    App\Api\Import\Reader\AbstractReader:
+        autowire: false
+        abstract: true
+        arguments:
+            - '@monolog.logger'
+            - '@http_client'
+            - '@validator'
+
+    App\Api\Import\Reader\WakfuActionReader:
+        autowire: false
+        parent: App\Api\Import\Reader\AbstractReader
+
+    App\Api\Import\Reader\WakfuEquipmentItemTypeReader:
+        autowire: false
+        parent: App\Api\Import\Reader\AbstractReader
+
+    # WRITER
+    App\Api\Import\Writer\AbstractDatabaseWriter:
+        autowire: false
+        abstract: true
+        arguments:
+            - '@doctrine.orm.entity_manager'
+
+    App\Api\Import\Writer\WakfuActionWriter:
+        autowire: false
+        parent: App\Api\Import\Writer\AbstractDatabaseWriter
+
+    App\Api\Import\Writer\WakfuEquipmentItemTypeWriter:
+        autowire: false
+        parent: App\Api\Import\Writer\AbstractDatabaseWriter
+        arguments:
+            $equipmentItemTypeManager: '@App\Api\Import\Manager\WakfuEquipmentItemTypeManager'
+        calls:
+            - [ setTransformers, [ {
+                "parent": '@App\Api\Import\Transformer\WakfuEquipmentItemType\WakfuEquipmentItemTypeEntityTransformer',
+            } ] ]
+            - [ setPostponedTransformers, [ {
+                "equipmentPositions": '@App\Api\Import\Transformer\WakfuEquipmentItemType\WakfuEquipmentPositionTransformer',
+                "equipmentDisabledPositions": '@App\Api\Import\Transformer\WakfuEquipmentItemType\WakfuEquipmentDisabledPositionTransformer',
+            } ] ]
+
+    # TRANSFORMER
+    App\Api\Import\Transformer\AbstractEntityTransformer:
+        autowire: false
+        abstract: true
+        arguments:
+            - '@doctrine.orm.entity_manager'
+
+    App\Api\Import\Transformer\AbstractEntityPostponedTransformer:
+        autowire: false
+        abstract: true
+        arguments:
+            - '@doctrine.orm.entity_manager'
+    
+    App\Api\Import\Transformer\WakfuEquipmentItemType\WakfuEquipmentItemTypeEntityTransformer:
+        autowire: false
+        parent: App\Api\Import\Transformer\AbstractEntityTransformer
+
+    App\Api\Import\Transformer\WakfuEquipmentItemType\WakfuEquipmentPositionTransformer:
+        autowire: false
+        parent: App\Api\Import\Transformer\AbstractEntityPostponedTransformer
+
+    App\Api\Import\Transformer\WakfuEquipmentItemType\WakfuEquipmentDisabledPositionTransformer:
+        autowire: false
+        parent: App\Api\Import\Transformer\AbstractEntityPostponedTransformer
+
+    # MANAGER
+    App\Api\Import\Manager\WakfuEquipmentItemTypeManager:
+        autowire: false
+        arguments:
+            - '@doctrine.orm.entity_manager'
