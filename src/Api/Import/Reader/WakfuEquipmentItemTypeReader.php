@@ -12,11 +12,11 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Optional;
 
-class WakfuEquipmentItemTypeReader extends AbstractReader
+class WakfuEquipmentItemTypeReader extends AbstractWakfuReader
 {
     protected function getEndpoint(): string
     {
-        return sprintf(ConfigConstant::WAKFU_API_URL, ConfigConstant::WAKFU_API_VERSION, EndpointEnum::EquipmentItemTypes->value);
+        return EndpointEnum::EquipmentItemTypes->value;
     }
 
     protected function getConstraints(): ?Collection

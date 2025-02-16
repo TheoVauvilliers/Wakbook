@@ -26,17 +26,9 @@ abstract class AbstractReader implements ReaderInterface
     ) {
     }
 
-    /**
-     * @throws TransportExceptionInterface
-     * @throws ServerExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws DecodingExceptionInterface
-     * @throws ClientExceptionInterface
-     * @throws Exception
-     */
     public function read(): void
     {
-        $response = $this->client->request('GET', $this->getEndpoint());
+        $response = $this->client->request('GET', $this->getUrl());
         $statusCode = $response->getStatusCode();
 
         if ($statusCode !== 200) {
@@ -105,7 +97,7 @@ abstract class AbstractReader implements ReaderInterface
 
     abstract protected function getConstraints(): ?Collection;
 
-    abstract protected function getEndpoint(): string;
+    abstract protected function getUrl(): string;
 
     protected function getIndexesToRenameOrUnset(): array
     {
