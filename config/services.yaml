@@ -32,6 +32,13 @@ services:
             - '@App\Api\Import\Reader\WakfuStateReader'
             - '@App\Api\Import\Writer\WakfuStateWriter'
 
+    App\Api\Import\Command\WakfuItemPropertyCommand:
+        autowire: false
+        arguments:
+            - '@App\Api\Import\Processor\Processor'
+            - '@App\Api\Import\Reader\WakfuItemPropertyReader'
+            - '@App\Api\Import\Writer\WakfuItemPropertyWriter'
+
     # PROCESSOR
     App\Api\Import\Processor\Processor:
         autowire: false
@@ -63,6 +70,10 @@ services:
         autowire: false
         parent: App\Api\Import\Reader\AbstractWakfuReader
 
+    App\Api\Import\Reader\WakfuItemPropertyReader:
+        autowire: false
+        parent: App\Api\Import\Reader\AbstractWakfuReader
+
     # WRITER
     App\Api\Import\Writer\AbstractDatabaseWriter:
         autowire: false
@@ -89,6 +100,10 @@ services:
             } ] ]
 
     App\Api\Import\Writer\WakfuStateWriter:
+        autowire: false
+        parent: App\Api\Import\Writer\AbstractDatabaseWriter
+
+    App\Api\Import\Writer\WakfuItemPropertyWriter:
         autowire: false
         parent: App\Api\Import\Writer\AbstractDatabaseWriter
 
