@@ -22,7 +22,7 @@ class WakfuActionReader extends AbstractWakfuReader
         return new Collection([
             WakfuEntityInterface::ID => new NotBlank(),
             'effect' => new NotBlank(),
-            'description' => new Optional(),
+            'description' => new NotBlank(),
         ], allowExtraFields: true);
     }
 
