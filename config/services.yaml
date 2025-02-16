@@ -25,6 +25,13 @@ services:
             - '@App\Api\Import\Reader\WakfuEquipmentItemTypeReader'
             - '@App\Api\Import\Writer\WakfuEquipmentItemTypeWriter'
 
+    App\Api\Import\Command\WakfuStateCommand:
+        autowire: false
+        arguments:
+            - '@App\Api\Import\Processor\Processor'
+            - '@App\Api\Import\Reader\WakfuStateReader'
+            - '@App\Api\Import\Writer\WakfuStateWriter'
+
     # PROCESSOR
     App\Api\Import\Processor\Processor:
         autowire: false
@@ -52,6 +59,10 @@ services:
         autowire: false
         parent: App\Api\Import\Reader\AbstractWakfuReader
 
+    App\Api\Import\Reader\WakfuStateReader:
+        autowire: false
+        parent: App\Api\Import\Reader\AbstractWakfuReader
+
     # WRITER
     App\Api\Import\Writer\AbstractDatabaseWriter:
         autowire: false
@@ -76,6 +87,10 @@ services:
                 "equipmentPositions": '@App\Api\Import\Transformer\WakfuEquipmentItemType\WakfuEquipmentPositionTransformer',
                 "equipmentDisabledPositions": '@App\Api\Import\Transformer\WakfuEquipmentItemType\WakfuEquipmentDisabledPositionTransformer',
             } ] ]
+
+    App\Api\Import\Writer\WakfuStateWriter:
+        autowire: false
+        parent: App\Api\Import\Writer\AbstractDatabaseWriter
 
     # TRANSFORMER
     App\Api\Import\Transformer\AbstractEntityTransformer:
