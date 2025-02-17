@@ -57,6 +57,8 @@ services:
     App\Api\Import\Reader\AbstractWakfuReader:
         autowire: false
         parent: App\Api\Import\Reader\AbstractReader
+        arguments:
+            $wakfuApiVersionProvider: '@App\Api\Import\Provider\WakfuApiVersionProvider'
 
     App\Api\Import\Reader\WakfuActionReader:
         autowire: false
@@ -137,3 +139,9 @@ services:
         autowire: false
         arguments:
             - '@doctrine.orm.entity_manager'
+
+    # PROVIDER
+    App\Api\Import\Provider\WakfuApiVersionProvider:
+        autowire: false
+        arguments:
+            - '@http_client'

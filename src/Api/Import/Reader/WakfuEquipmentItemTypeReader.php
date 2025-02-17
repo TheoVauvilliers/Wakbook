@@ -2,7 +2,6 @@
 
 namespace App\Api\Import\Reader;
 
-use App\Api\Import\Constant\ConfigConstant;
 use App\Api\Import\Enum\EndpointEnum;
 use App\Api\Import\Response\ResponseInterface;
 use App\Api\Import\Response\WakfuEquipmentItemTypeResponse;

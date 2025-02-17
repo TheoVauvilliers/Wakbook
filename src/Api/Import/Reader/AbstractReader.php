@@ -26,20 +26,6 @@ abstract class AbstractReader implements ReaderInterface
     ) {
     }
 
-    public function read(): void
-    {
-        $response = $this->client->request('GET', $this->getUrl());
-        $statusCode = $response->getStatusCode();
-
-        if ($statusCode !== 200) {
-            throw new Exception(sprintf('Failed to retrieve data, status code %s', $statusCode));
-        }
-
-        $responseClass = $this->getResponseClass();
-
-        $this->data = $responseClass !== null ? $responseClass($response->toArray()) : $response->toArray();
-    }
-
     public function getData(): array
     {
         return $this->data;
@@ -96,8 +82,6 @@ abstract class AbstractReader implements ReaderInterface
     abstract protected function getResponseClass(): ?ResponseInterface;
 
     abstract protected function getConstraints(): ?Collection;
-
-    abstract protected function getUrl(): string;
 
     protected function getIndexesToRenameOrUnset(): array
     {

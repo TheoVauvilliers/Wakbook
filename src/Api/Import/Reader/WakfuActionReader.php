@@ -8,7 +8,6 @@ use App\Api\Import\Response\ResponseInterface;
 use App\Entity\WakfuEntityInterface;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Optional;
 
 class WakfuActionReader extends AbstractWakfuReader
 {

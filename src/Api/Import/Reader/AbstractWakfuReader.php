@@ -3,34 +3,40 @@
 namespace App\Api\Import\Reader;
 
 use App\Api\Import\Constant\ConfigConstant;
-use Exception;
+use App\Api\Import\Provider\WakfuApiVersionProvider;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-abstract class AbstractWakfuReader extends AbstractReader
+abstract class AbstractWakfuReader extends AbstractApiReader
 {
+    public function __construct(
+        LoggerInterface $logger,
+        HttpClientInterface $client,
+        ValidatorInterface $validator,
+        protected WakfuApiVersionProvider $wakfuApiVersionProvider,
+    ) {
+        parent::__construct($logger, $client, $validator);
+    }
+
     abstract protected function getEndpoint(): string;
 
     protected function getUrl(): string
     {
-        return sprintf(ConfigConstant::WAKFU_API_URL, $this->getVersion(), $this->getEndpoint());
+        return sprintf(
+            ConfigConstant::WAKFU_API_URL,
+            $this->wakfuApiVersionProvider->getVersion(),
+            $this->getEndpoint()
+        );
     }
 
-    protected function getVersion(): string
+    protected function getMethod(): string
     {
-        $response = $this->client->request('GET', ConfigConstant::WAKFU_API_VERSION_URL);
-        $statusCode = $response->getStatusCode();
+        return self::GET;
+    }
 
-        if ($statusCode !== 200) {
-            throw new Exception(sprintf('Failed to retrieve version, status code %s', $statusCode));
-        }
-
-        $data = $response->toArray();
-
-        $version = $data['version'] ?? null;
-
-        if ($version === null) {
-            throw new Exception(sprintf('Failed to retrieve version, status code %s', $version));
-        }
-
-        return $version;
+    protected function getOptions(): array
+    {
+        return [];
     }
 }
